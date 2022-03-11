@@ -3,13 +3,22 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { FaSignInAlt } from "react-icons/fa";
 
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../features/auth/authSlice";
+
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  const { name, email, password, password2 } = formData;
+  const { email, password } = formData;
+
+  const dispatch = useDispatch();
+  const { user, isLoading, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   const onChange = (event) => {
     setFormData((prevState) => ({
@@ -20,11 +29,12 @@ function Login() {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log("Submit detected");
 
-    if (password !== password2) {
-      toast.error("Passwords do not match");
-    }
+    const userData = {
+      email,
+      password,
+    };
+    dispatch(login(userData));
   };
 
   return (
@@ -46,7 +56,7 @@ function Login() {
               id="email"
               value={email}
               onChange={onChange}
-              placeholder="Enter your email..."
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -58,7 +68,7 @@ function Login() {
               id="password"
               value={password}
               onChange={onChange}
-              placeholder="Create a password..."
+              placeholder="Enter your password"
               required
             />
           </div>

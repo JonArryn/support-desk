@@ -3,6 +3,10 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { FaUser } from "react-icons/fa";
 
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { register } from "../features/auth/authSlice";
+
 function Register() {
   const [formData, setFormData] = useState({
     name: "",
@@ -13,6 +17,11 @@ function Register() {
 
   const { name, email, password, password2 } = formData;
 
+  const dispatch = useDispatch();
+  const { user, isLoading, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
   const onChange = (event) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -22,10 +31,16 @@ function Register() {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log("Submit detected");
 
     if (password !== password2) {
       toast.error("Passwords do not match");
+    } else {
+      const userData = {
+        name,
+        email,
+        password,
+      };
+      dispatch(register(userData));
     }
   };
 
@@ -60,7 +75,7 @@ function Register() {
               id="email"
               value={email}
               onChange={onChange}
-              placeholder="Enter your email..."
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -72,7 +87,7 @@ function Register() {
               id="password"
               value={password}
               onChange={onChange}
-              placeholder="Create a password..."
+              placeholder="Create a password"
               required
             />
           </div>
@@ -84,7 +99,7 @@ function Register() {
               id="password2"
               value={password2}
               onChange={onChange}
-              placeholder="Confirm password..."
+              placeholder="Confirm password"
               required
             />
           </div>
